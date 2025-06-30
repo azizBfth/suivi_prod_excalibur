@@ -164,4 +164,4 @@ if __name__ == "__main__":
     print("-" * 60)
     # Disable reload when running from within another application context
     # Use reload=False to avoid signal handling issues
-    uvicorn.run("main:app", host="localhost", port=80, reload=False)
+    uvicorn.run("main:app", host="0.0.0.0", port=80, reload=False)
