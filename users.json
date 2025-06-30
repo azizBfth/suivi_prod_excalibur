@@ -3,36 +3,46 @@
     "admin": {
       "username": "admin",
       "full_name": "Aziz Boufath",
-      "email": "admin@company.com",
-      "hashed_password": "$2b$12$wybryr2T18eRKoC5Flo11uVPK0EMrobnPA3zy9B8uSOzjgRJUU.a6",
+      "email": "boufath.aziz@emkamed.tn",
+      "hashed_password": "$2a$12$fMjlardFMyKHcjG6a0F4JO4vcCXM1yp0SbsGalSnoiV03xIu01DaO",
       "is_active": true,
       "role": "admin",
       "created_at": "2024-01-01T00:00:00Z",
       "last_login": null
     },
-    "user": {
-      "username": "user",
-      "full_name": "Regular User",
-      "email": "user@company.com",
-      "hashed_password": "$2b$12$yJ63G3zI43jR686rfL37qeFvZLywAyh23jwRlSOihdPl3fzgDhkLC",
+    "abo": {
+      "username": "abo",
+      "full_name": "abo",
+      "email": "boufath.aziz@emkamed.onmicrosoft.com",
+      "hashed_password": "$2a$12$IOmsLDuarGtS5hBICy39vev4k8mgWv/dbbQZ17A3ErLldUFYovNAS",
       "is_active": true,
       "role": "user",
       "created_at": "2024-01-01T00:00:00Z",
       "last_login": null
     },
-    "chef": {
-      "username": "chef",
-      "full_name": "Chef de Production",
-      "email": "chef@company.com",
-      "hashed_password": "$2b$12$ViHgR5t821JGvtyDujGzsuW201K6MNFlp31VvwgIjHB9Ibt7H1z5G",
+    "hbs": {
+      "username": "hbs",
+      "full_name": "Res de Production",
+      "email": "methode.emkamed@emkaelec.com",
+      "hashed_password": "$2a$12$Mgun5m6xfJRz5vlpjFzLg.jl3cU9rZvqiC6HiY0Uw81aeOPSuPKyG",
       "is_active": true,
-      "role": "chef",
+      "role": "res",
       "created_at": "2025-06-27T11:19:51.112297",
+      "last_login": null
+    },
+    "bsh": {
+      "username": "bsh",
+      "full_name": "Habib",
+      "email": "methode.emkamed@emkaelec.com",
+      "hashed_password": "$2b$12$st7hHZKOmBiU7pYe1KUUnOOn.B9facfrBKsiV8/GuQh08O/GP39Qu",
+      "is_active": true,
+      "role": "res",
+      "created_at": "2025-06-30T10:21:59.146665",
       "last_login": null
     }
   },
   "metadata": {
     "version": "2.0",
-    "last_updated": "2025-06-27T11:19:51.112360"
+    "last_updated": "2025-06-30T10:21:59.146706"
   }
 }

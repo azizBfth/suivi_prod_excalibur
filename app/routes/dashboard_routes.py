@@ -12,7 +12,7 @@ from app.controllers.dashboard_controller import DashboardController
 from app.models.schemas import BaseResponse, User
 from app.core.database import get_analyzer
 from app.core.data_analyzer import ExcaliburDataAnalyzer
-from app.middleware.auth_middleware import get_current_user, get_chef_or_admin_user, get_admin_user
+from app.middleware.auth_middleware import get_current_user, get_res_or_admin_user, get_admin_user
 
 router = APIRouter(tags=["Dashboard"])
 templates = Jinja2Templates(directory="templates")
@@ -28,7 +28,7 @@ async def dashboard(request: Request, current_user: User = Depends(get_current_u
     # Determine user role display
     role_display = {
         "admin": "Administrateur",
-        "chef": "Chef de Production",
+        "res": "Res de Production",
         "user": "Utilisateur Standard"
     }.get(current_user.role, "Utilisateur Standard")
 
@@ -38,9 +38,9 @@ async def dashboard(request: Request, current_user: User = Depends(get_current_u
         "user_role": role_display,
         "user_permissions": {
             "is_admin": current_user.role == "admin",
-            "is_chef_or_admin": current_user.role in ["admin", "chef"],
+            "is_res_or_admin": current_user.role in ["admin", "res"],
             "can_manage_users": current_user.role == "admin",
-            "can_export": current_user.role in ["admin", "chef"],
+            "can_export": current_user.role in ["admin", "res"],
             "can_view_analytics": True
         }
     })
@@ -52,7 +52,7 @@ async def of_management(request: Request, current_user: User = Depends(get_curre
     # Determine user role display
     role_display = {
         "admin": "Administrateur",
-        "chef": "Chef de Production",
+        "res": "Res de Production",
         "user": "Utilisateur Standard"
     }.get(current_user.role, "Utilisateur Standard")
 
@@ -62,9 +62,9 @@ async def of_management(request: Request, current_user: User = Depends(get_curre
         "user_role": role_display,
         "user_permissions": {
             "is_admin": current_user.role == "admin",
-            "is_chef_or_admin": current_user.role in ["admin", "chef"],
+            "is_res_or_admin": current_user.role in ["admin", "res"],
             "can_manage_users": current_user.role == "admin",
-            "can_export": current_user.role in ["admin", "chef"],
+            "can_export": current_user.role in ["admin", "res"],
             "can_view_analytics": True
         }
     })
@@ -77,7 +77,7 @@ async def unified_dashboard(request: Request, current_user: User = Depends(get_c
     # Determine user role display
     role_display = {
         "admin": "Administrateur",
-        "chef": "Chef de Production",
+        "res": "Res de Production",
         "user": "Utilisateur Standard"
     }.get(current_user.role, "Utilisateur Standard")
 
@@ -87,9 +87,9 @@ async def unified_dashboard(request: Request, current_user: User = Depends(get_c
         "user_role": role_display,
         "user_permissions": {
             "is_admin": current_user.role == "admin",
-            "is_chef_or_admin": current_user.role in ["admin", "chef"],
+            "is_res_or_admin": current_user.role in ["admin", "res"],
             "can_manage_users": current_user.role == "admin",
-            "can_export": current_user.role in ["admin", "chef"],
+            "can_export": current_user.role in ["admin", "res"],
             "can_view_analytics": True
         }
     })

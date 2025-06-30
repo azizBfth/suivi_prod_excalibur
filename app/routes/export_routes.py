@@ -12,7 +12,7 @@ import csv
 import logging
 
 from app.models.schemas import BaseResponse, User
-from app.middleware.auth_middleware import get_current_user, get_chef_or_admin_user
+from app.middleware.auth_middleware import get_current_user, get_res_or_admin_user
 from app.core.database import get_analyzer
 
 # Setup logger
@@ -58,7 +58,7 @@ async def export_csv(
     famille_filter: Optional[str] = Query(None, description="Family filter"),
     client_filter: Optional[str] = Query(None, description="Client filter"),
     table: str = Query("of", description="Table to export (of, histo, all)"),
-    current_user: User = Depends(get_chef_or_admin_user),  # Require chef or admin privileges
+    current_user: User = Depends(get_res_or_admin_user),  # Require res or admin privileges
     analyzer=Depends(get_analyzer)
 ):
     """Export data to CSV format."""
@@ -127,7 +127,7 @@ async def export_excel(
     famille_filter: Optional[str] = Query(None, description="Family filter"),
     client_filter: Optional[str] = Query(None, description="Client filter"),
     table: str = Query("of", description="Table to export (of, histo, all)"),
-    current_user: User = Depends(get_chef_or_admin_user),  # Require chef or admin privileges
+    current_user: User = Depends(get_res_or_admin_user),  # Require res or admin privileges
     analyzer=Depends(get_analyzer)
 ):
     """Export data to Excel format."""
@@ -265,7 +265,7 @@ async def export_txt_resume(
 
 @router.get("/summary", response_model=BaseResponse)
 async def get_export_summary(
-    current_user: User = Depends(get_chef_or_admin_user),  # Require chef or admin privileges
+    current_user: User = Depends(get_res_or_admin_user),  # Require res or admin privileges
     analyzer=Depends(get_analyzer)
 ):
     """Get summary information about available data for export."""
@@ -405,7 +405,7 @@ async def validate_export_request(
 @router.get("/dashboard")
 async def export_dashboard_data(
     format: str = Query("csv", description="Export format (csv, excel)"),
-    current_user: User = Depends(get_chef_or_admin_user),  # Require chef or admin privileges
+    current_user: User = Depends(get_res_or_admin_user),  # Require res or admin privileges
     analyzer=Depends(get_analyzer)
 ):
     """Export dashboard data in specified format."""
@@ -458,7 +458,7 @@ async def export_comprehensive_csv(
     dateFin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - frontend format"),
     date_debut: Optional[str] = Query(None, description="Start date (YYYY-MM-DD) - backend format"),
     date_fin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - backend format"),
-    current_user: User = Depends(get_chef_or_admin_user),
+    current_user: User = Depends(get_res_or_admin_user),
     analyzer=Depends(get_analyzer)
 ):
     """Export comprehensive CSV with all 3 dashboard tabs, proper labels, separators, and summary tables."""
@@ -614,7 +614,7 @@ async def export_comprehensive_txt(
     dateFin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - frontend format"),
     date_debut: Optional[str] = Query(None, description="Start date (YYYY-MM-DD) - backend format"),
     date_fin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - backend format"),
-    current_user: User = Depends(get_chef_or_admin_user),
+    current_user: User = Depends(get_res_or_admin_user),
     analyzer=Depends(get_analyzer)
 ):
     """Export comprehensive TXT detailed report with all dashboard data, KPIs, and analysis."""
@@ -853,7 +853,7 @@ async def export_tab_data(
     dateFin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - frontend format"),
     date_debut: Optional[str] = Query(None, description="Start date (YYYY-MM-DD) - backend format"),
     date_fin: Optional[str] = Query(None, description="End date (YYYY-MM-DD) - backend format"),
-    current_user: User = Depends(get_chef_or_admin_user),  # Require chef or admin privileges
+    current_user: User = Depends(get_res_or_admin_user),  # Require res or admin privileges
     analyzer=Depends(get_analyzer)
 ):
     """Export data for a specific tab with date filtering support."""

@@ -190,14 +190,14 @@ async def get_admin_user(
     return current_user
 
 
-async def get_chef_or_admin_user(
+async def get_res_or_admin_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
-    """Get current user and verify chef or admin privileges."""
-    if current_user.role not in ["admin", "chef"]:
+    """Get current user and verify res or admin privileges."""
+    if current_user.role not in ["admin", "res"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Chef or Admin privileges required"
+            detail="Res or Admin privileges required"
         )
     return current_user
 
@@ -205,5 +205,5 @@ async def get_chef_or_admin_user(
 async def get_any_authenticated_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
-    """Get any authenticated user (admin, chef, or user)."""
+    """Get any authenticated user (admin, res, or user)."""
     return current_user

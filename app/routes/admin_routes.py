@@ -54,10 +54,10 @@ async def create_user(
     """Create a new user."""
     try:
         # Validate role
-        if role not in ["admin", "chef", "user"]:
+        if role not in ["admin", "res", "user"]:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid role. Must be 'admin', 'chef', or 'user'"
+                detail="Invalid role. Must be 'admin', 'res', or 'user'"
             )
 
         # Check if user already exists
@@ -140,10 +140,10 @@ async def update_user(
     """Update user information."""
     try:
         # Validate role
-        if role not in ["admin", "chef", "user"]:
+        if role not in ["admin", "res", "user"]:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid role. Must be 'admin', 'chef', or 'user'"
+                detail="Invalid role. Must be 'admin', 'res', or 'user'"
             )
 
         # Update user using the auth service

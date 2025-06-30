@@ -110,7 +110,7 @@
                     <tr>
                       <td>
                         <i
-                          class="fas fa-{{ 'crown' if user.role == 'admin' else ('hard-hat' if user.role == 'chef' else 'user') }} me-2"
+                          class="fas fa-{{ 'crown' if user.role == 'admin' else ('hard-hat' if user.role == 'res' else 'user') }} me-2"
                         ></i>
                         {{ user.username }}
                       </td>
@@ -118,10 +118,10 @@
                       <td>{{ user.email }}</td>
                       <td>
                         <span
-                          class="badge bg-{{ 'danger' if user.role == 'admin' else ('warning' if user.role == 'chef' else 'primary') }}"
+                          class="badge bg-{{ 'danger' if user.role == 'admin' else ('warning' if user.role == 'res' else 'primary') }}"
                         >
                           {% if user.role == 'admin' %} Administrateur {% elif
-                          user.role == 'chef' %} Chef de Production {% else %}
+                          user.role == 'res' %} Res de Production {% else %}
                           Utilisateur {% endif %}
                         </span>
                       </td>
@@ -230,7 +230,7 @@
                 <label for="role" class="form-label">Rôle</label>
                 <select class="form-select" id="role" name="role">
                   <option value="user">Utilisateur</option>
-                  <option value="chef">Chef de Production</option>
+                  <option value="res">Res de Production</option>
                   <option value="admin">Administrateur</option>
                 </select>
               </div>
@@ -338,7 +338,7 @@
                 <label for="editRole" class="form-label">Rôle</label>
                 <select class="form-select" id="editRole" name="role">
                   <option value="user">Utilisateur</option>
-                  <option value="chef">Chef de Production</option>
+                  <option value="res">Res de Production</option>
                   <option value="admin">Administrateur</option>
                 </select>
               </div>

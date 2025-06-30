@@ -53,10 +53,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 480  # 8 hours
 
     # Default admin credentials (change in production)
-    default_admin_username: str = "admin"
-    default_admin_password: str = "admin123"
-    default_user_username: str = "user"
-    default_user_password: str = "user123"
+    default_admin_username: str = "abo"
+    default_admin_password: str = "HbB6yq+R+U"
+    default_user_username: str = "abo"
+    default_user_password: str = "abomk"
     class Config:
         env_file = ".env"
         case_sensitive = False

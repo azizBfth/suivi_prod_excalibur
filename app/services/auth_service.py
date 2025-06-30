@@ -319,7 +319,7 @@ class AuthService:
             user.full_name = full_name
         if email is not None:
             user.email = email
-        if role is not None and role in ["admin", "chef", "user"]:
+        if role is not None and role in ["admin", "res", "user"]:
             user.role = role
         if is_active is not None:
             user.is_active = is_active
@@ -384,28 +384,38 @@ def init_default_users():
             "admin": UserInDB(
                 username="admin",
                 full_name="Aziz Boufath",
-                email="admin@company.com",
-                hashed_password="$2b$12$wybryr2T18eRKoC5Flo11uVPK0EMrobnPA3zy9B8uSOzjgRJUU.a6" if PASSLIB_AVAILABLE else simple_hash_password("admin123"),  # "admin123"
+                email="boufath.aziz@emkamed.tn",
+                hashed_password="$2a$12$OZH7jQu40JCJwofShaLfo.0TXxVskKYGuBe8uqcLeXpmHT3WYU522" if PASSLIB_AVAILABLE else simple_hash_password("HbB6yq+R+U"),  # "HbB6yq+R+U"
                 is_active=True,
                 role="admin",
                 created_at=datetime.now().isoformat(),
                 last_login=None
             ),
-            "chef": UserInDB(
-                username="chef",
-                full_name="Chef de Production",
-                email="chef@company.com",
-                hashed_password="$2b$12$yJ63G3zI43jR686rfL37qeFvZLywAyh23jwRlSOihdPl3fzgDhkLC" if PASSLIB_AVAILABLE else simple_hash_password("chef123"),  # "chef123"
+            "res": UserInDB(
+                username="hbs",
+                full_name="Responsable de Production",
+                email="slama.methode@emkaelec.com",
+                hashed_password="$2a$12$0YeeZG/621f.dbUFdzSfMeNl0uNvti5wrLM8Yle7nATwnndFxo032" if PASSLIB_AVAILABLE else simple_hash_password("hbsmk"),  # "hbsmk"
                 is_active=True,
-                role="chef",
+                role="res",
+                created_at=datetime.now().isoformat(),
+                last_login=None
+            ),
+              "res": UserInDB(
+                username="nho",
+                full_name="Responsable de Production",
+                email="neji.houaya@emkamed.tn",
+                hashed_password="$2a$12$EciOtB9jah4wE0pMUAZESuZjk41SrStpsy9R.jEU/TXmv48uEewEy2" if PASSLIB_AVAILABLE else simple_hash_password("nhomk"),  # "nhomk"
+                is_active=True,
+                role="res",
                 created_at=datetime.now().isoformat(),
                 last_login=None
             ),
             "user": UserInDB(
-                username="user",
-                full_name="Utilisateur Standard",
-                email="user@company.com",
-                hashed_password="$2b$12$yJ63G3zI43jR686rfL37qeFvZLywAyh23jwRlSOihdPl3fzgDhkLC" if PASSLIB_AVAILABLE else simple_hash_password("user123"),  # "user123"
+                username="abo",
+                full_name="abo",
+                email="boufath.aziz@emkamed.onmicrosoft.com",
+                hashed_password="$2a$12$CfTZTh6zWIE7JiyiepQMIerH8hYhu0LqdEiE3Mqo9Z5wb0CdQmHSi" if PASSLIB_AVAILABLE else simple_hash_password("abomk"),  # "abomk"
                 is_active=True,
                 role="user",
                 created_at=datetime.now().isoformat(),

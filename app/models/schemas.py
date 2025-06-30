@@ -160,7 +160,7 @@ class User(BaseModel):
     full_name: Optional[str] = None
     email: Optional[str] = None
     is_active: bool = True
-    role: str = "user"  # "admin", "chef", "user"
+    role: str = "user"  # "admin", "res", "user"
     created_at: Optional[str] = None
     last_login: Optional[str] = None
 
