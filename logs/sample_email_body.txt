@@ -1,0 +1,14 @@
+**Production Order Alert!**
+
+Details of the alert:
+- Order ID: OF_001
+- Product: Produit de test
+- Client: Client Test
+- Status: OVERDUE
+- Days Overdue: 3
+- Priority: HIGH
+
+This notification was generated automatically by the Excalibur ERP Production Tracking System.
+Generated on: 2025-06-16 13:16:07
+
+Please take immediate action to resolve this production order delay.

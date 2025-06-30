@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cahier des Charges - ASTPP-Excalibur V2.0</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+        border-bottom: #0779e4 3px solid;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.5em;
+      }
+      header p {
+        font-size: 1.1em;
+      }
+      nav#table-of-contents {
+        background: #f9f9f9;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+      nav#table-of-contents h2 {
+        margin-top: 0;
+        color: #0779e4;
+      }
+      nav#table-of-contents ul {
+        list-style: none;
+        padding: 0;
+      }
+      nav#table-of-contents ul li {
+        margin-bottom: 8px;
+      }
+      nav#table-of-contents ul li a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+      }
+      nav#table-of-contents ul li a:hover {
+        color: #0779e4;
+      }
+      nav#table-of-contents ul ul {
+        /* Sub-list styling */
+        margin-left: 20px;
+        list-style: disc;
+      }
+      nav#table-of-contents ul ul li a {
+        font-weight: normal;
+      }
+
+      section {
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-left: 5px solid #0779e4; /* Accent color */
+      }
+      section h2 {
+        color: #0779e4;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      h3 {
+        color: #555;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #0779e4;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      ul,
+      ol {
+        padding-left: 20px;
+      }
+      .meta-info {
+        background: #e7f3fe;
+        border: 1px solid #b3d7ff;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+      .meta-info p {
+        margin: 5px 0;
+      }
+      .note {
+        font-style: italic;
+        color: #666;
+        margin-top: 5px;
+        display: block;
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #333;
+        color: #fff;
+        margin-top: 30px;
+      }
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+        }
+        header h1 {
+          font-size: 2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Cahier des Charges</h1>
+      <p>
+        Application de Suivi de Temps et Performance de Production Excalibur
+        (ASTPP-Excalibur)
+      </p>
+    </header>
+
+    <div class="container">
+      <div class="meta-info">
+        <p><strong>Version :</strong> 2.0</p>
+        <p><strong>Date de rédaction :</strong> 1 Mai 2025</p>
+        <p><strong>Responsable projet :</strong> Boufath Aziz</p>
+        <p><strong>Client :</strong> EmkaMed</p>
+      </div>
+
+      <nav id="table-of-contents">
+        <h2>Table des Matières</h2>
+        <ul>
+          <li><a href="#presentation">1. Présentation Générale</a></li>
+          <li><a href="#objectifs">2. Objectifs du Projet</a></li>
+          <li>
+            <a href="#perimetre">3. Périmètre Fonctionnel</a>
+            <ul>
+              <li><a href="#modules-principaux">3.1. Modules Principaux</a></li>
+              <li>
+                <a href="#fonctionnalites-detaillees"
+                  >3.2. Fonctionnalités Détaillées par Module</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li><a href="#utilisateurs">4. Utilisateurs Cibles et Rôles</a></li>
+          <li><a href="#donnees">5. Données Utilisées</a></li>
+          <li><a href="#kpis">6. Indicateurs Clés de Performance (KPIs)</a></li>
+          <li>
+            <a href="#ui-ux"
+              >7. Interface Utilisateur (UI) et Expérience Utilisateur (UX)</a
+            >
+          </li>
+          <li><a href="#contraintes">8. Contraintes Techniques</a></li>
+          <li><a href="#livrables">9. Livrables</a></li>
+          <li><a href="#planning">10. Planning Prévisionnel</a></li>
+          <li><a href="#ressources">11. Ressources Nécessaires</a></li>
+          <li><a href="#maintenance">12. Maintenance et Évolution</a></li>
+        </ul>
+      </nav>
+
+      <section id="presentation">
+        <h2>1. Présentation Générale</h2>
+        <p>
+          <strong>Nom du projet :</strong> Application de Suivi de Temps et
+          Performance de Production Excalibur (ASTPP-Excalibur)
+        </p>
+        <p>
+          <strong>Contexte :</strong> Le client EmkaMed souhaite optimiser le
+          suivi de sa production en s'appuyant sur les données existantes de son
+          ERP Excalibur. L'objectif est de fournir une visibilité en temps réel,
+          d'analyser les performances et d'identifier les points d'amélioration.
+        </p>
+        <p>
+          <strong>Description Sommaire :</strong> L'application sera une
+          interface web (dashboarding et reporting) qui se connectera en lecture
+          seule à la base de données Excalibur ERP pour extraire, traiter et
+          présenter les informations de production de manière intuitive et
+          exploitable. Elle n'aura pas pour vocation de modifier les données de
+          l'ERP.
+        </p>
+      </section>
+
+      <section id="objectifs">
+        <h2>2. Objectifs du Projet</h2>
+        <ul>
+          <li>
+            <strong>Suivi en Temps Réel :</strong> Fournir une vue actualisée
+            des ordres de fabrication (OF) en cours, leur avancement et leur
+            statut.
+          </li>
+          <li>
+            <strong>Analyse de Performance :</strong>
+            <ul>
+              <li>
+                Comparer les temps théoriques (prévus) par l'ERP aux temps réels
+                passés.
+              </li>
+              <li>
+                Calculer et visualiser l'efficacité par OF, produit, famille
+                technique.
+              </li>
+              <li>
+                Identifier les OF en retard ou dépassant les temps alloués via
+                un système d'alertes visuelles.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Aide à la Décision :</strong> Mettre à disposition des
+            tableaux de bord clairs et des rapports pour les responsables afin
+            d'optimiser la planification et l'allocation des ressources.
+          </li>
+          <li>
+            <strong>Optimisation des Processus :</strong> Identifier les goulots
+            d'étranglement, les sources de non-performance et les opportunités
+            d'amélioration continue.
+          </li>
+          <li>
+            <strong>Visualisation de la Charge :</strong> Fournir une estimation
+            de la charge de travail par secteur/famille technique en fonction
+            des OF en cours et des ressources disponibles.
+          </li>
+          <li>
+            <strong>Gestion du Backlog :</strong> Offrir une vue claire des OF
+            en attente, de leur priorité et des quantités/temps restants.
+          </li>
+        </ul>
+      </section>
+
+      <section id="perimetre">
+        <h2>3. Périmètre Fonctionnel</h2>
+        <h3 id="modules-principaux">
+          3.1. Modules Principaux de l'Application :
+        </h3>
+        <ul>
+          <li>Tableau de Bord Synthétique (Dashboard Principal)</li>
+          <li>Analyse Détaillée des Ordres de Fabrication (OF)</li>
+          <li>Visualisations Graphiques de Production</li>
+          <li>Analyse de la Charge de Travail</li>
+          <li>Analyse du Backlog</li>
+          <li>Analyse des Ressources Humaines (Personnel)</li>
+          <li>Génération de Rapports</li>
+        </ul>
+
+        <h3 id="fonctionnalites-detaillees">
+          3.2. Fonctionnalités Détaillées par Module :
+        </h3>
+        <h4>Tableau de Bord Synthétique :</h4>
+        <ul>
+          <li>
+            Affichage des KPIs globaux (Nombre total d'OF, OF en
+            cours/terminés/arrêtés, avancement moyen production/temps, nombre
+            d'OF en alerte, efficacité moyenne).
+          </li>
+          <li>
+            Graphiques synthétiques : répartition des statuts d'OF, proportion
+            d'OF en alerte.
+          </li>
+          <li>Aperçus rapides du backlog et de la charge de travail.</li>
+        </ul>
+        <h4>Analyse Détaillée des OF :</h4>
+        <ul>
+          <li>
+            Affichage tabulaire des OF avec toutes les informations pertinentes.
+          </li>
+          <li>Filtrage avancé et tri.</li>
+          <li>Export des données filtrées (CSV, Excel).</li>
+        </ul>
+        <h4>Visualisations Graphiques de Production :</h4>
+        <ul>
+          <li>Corrélation Avancement Production vs. Temps.</li>
+          <li>Distribution de l'efficacité.</li>
+          <li>Performance par Famille Technique.</li>
+        </ul>
+        <h4>Analyse de la Charge de Travail :</h4>
+        <ul>
+          <li>
+            KPIs de charge, tableau détaillé par secteur, visualisation
+            graphique.
+          </li>
+        </ul>
+        <h4>Analyse du Backlog :</h4>
+        <ul>
+          <li>
+            KPIs du backlog, tableau détaillé avec priorités, filtres,
+            graphiques de répartition.
+          </li>
+        </ul>
+        <h4>Analyse des Ressources Humaines (Personnel) :</h4>
+        <ul>
+          <li>
+            KPIs du personnel, tableau du personnel actif, graphiques de
+            répartition.
+          </li>
+        </ul>
+        <h4>Génération de Rapports :</h4>
+        <ul>
+          <li>Rapport textuel synthétique (.txt).</li>
+          <li>Export global des données (Excel multi-onglets).</li>
+        </ul>
+      </section>
+
+      <section id="utilisateurs">
+        <h2>4. Utilisateurs Cibles et Rôles</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Type d'utilisateur</th>
+              <th>Fonctionnalités accessibles</th>
+              <th>Objectifs typiques</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Responsable Production</strong></td>
+              <td>
+                Accès à tous les modules, analyse approfondie, configuration des
+                filtres, génération de rapports.
+              </td>
+              <td>
+                Prise de décision stratégique, optimisation des ressources,
+                suivi global.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Chef d'Atelier</strong></td>
+              <td>
+                Suivi des OF, graphiques, charge, backlog. Filtrage pour son
+                périmètre.
+              </td>
+              <td>
+                Suivi opérationnel, gestion des priorités, identification des
+                problèmes.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Planificateur</strong></td>
+              <td>Charge de travail, backlog, détail OF pour anticipation.</td>
+              <td>Planification, anticipation des surcharges/sous-charges.</td>
+            </tr>
+            <tr>
+              <td><strong>Administrateur Applicatif</strong></td>
+              <td>Maintenance de l'application, suivi technique.</td>
+              <td>Assurer la disponibilité et la performance de l'outil.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note">
+          Note : Cette version est axée sur la visualisation et l'analyse pour
+          les rôles de management et planification.
+        </p>
+      </section>
+
+      <section id="donnees">
+        <h2>5. Données Utilisées (Issues d'Excalibur ERP - Base `gpao`)</h2>
+        <p>
+          <strong>Table `OF_DA` (Ordres de Fabrication Principaux) :</strong>
+          `NUMERO_OFDA`, `PRODUIT`, `STATUT`, `LANCEMENT_AU_PLUS_TARD`,
+          `QUANTITE_DEMANDEE`, `CUMUL_ENTREES`, `DUREE_PREVUE`,
+          `CUMUL_TEMPS_PASSES`, `AFFAIRE`, `DESIGNATION`, `CLIENT`,
+          `FAMILLE_TECHNIQUE`.
+        </p>
+        <p>
+          <strong>Table `SALARIES` (Employés) :</strong> `NOM`, `PRENOM`,
+          `QUALIFICATION`, `ACTIF`.
+        </p>
+        <p>
+          <strong>Champs Calculés (SQL ou Python/Pandas) :</strong> `SEMAINE`,
+          `Avancement_PROD`, `Avancement_temps`, `Alerte_temps`,
+          `QUANTITE_RESTANTE`, `EFFICACITE`, `NOM_COMPLET`,
+          `COEFFICIENT_EFFICACITE`, `SECTEUR_PERSONNEL`, `RETARD_JOURS`,
+          `PRIORITE`, `TEMPS_RESTANT_ESTIME`, KPIs de charge.
+        </p>
+      </section>
+
+      <section id="kpis">
+        <h2>6. Indicateurs Clés de Performance (KPIs) à Suivre</h2>
+        <ul>
+          <li>Nombre total d'OF (filtré)</li>
+          <li>Répartition des OF par statut</li>
+          <li>% Avancement moyen (Production & Temps)</li>
+          <li>Nombre et % d'OF en alerte de temps</li>
+          <li>Efficacité moyenne des OF</li>
+          <li>Taux de charge par secteur</li>
+          <li>Nombre d'OF en backlog / urgents</li>
+          <li>Quantité et temps estimé du backlog</li>
+          <li>Coefficient d'efficacité moyen du personnel</li>
+        </ul>
+      </section>
+
+      <section id="ui-ux">
+        <h2>7. Interface Utilisateur (UI) et Expérience Utilisateur (UX)</h2>
+        <ul>
+          <li>
+            <strong>Type d'Interface :</strong> Application Web responsive
+            (Streamlit).
+          </li>
+          <li>
+            <strong>Navigation :</strong> Barre latérale pour filtres/options,
+            onglets pour sections.
+          </li>
+          <li>
+            <strong>Visualisation :</strong> Graphiques interactifs (Plotly),
+            tableaux clairs et filtrables, mise en évidence visuelle.
+          </li>
+          <li>
+            <strong>Interactivité :</strong> Filtres dynamiques, tooltips,
+            boutons d'action.
+          </li>
+          <li>
+            <strong>Performance :</strong> Chargement optimisé (cache
+            Streamlit).
+          </li>
+          <li>
+            <strong>Feedback :</strong> Messages clairs (chargement, erreur,
+            absence de données), indicateur de connexion.
+          </li>
+        </ul>
+      </section>
+
+      <section id="contraintes">
+        <h2>8. Contraintes Techniques</h2>
+        <ul>
+          <li>
+            <strong>Source de Données :</strong> SQL Anywhere (Excalibur ERP),
+            accès en lecture seule via ODBC (`pyodbc`).
+          </li>
+          <li>
+            <strong>Langage & Frameworks :</strong> Python 3.x, Pandas, NumPy,
+            Streamlit, Plotly.
+          </li>
+          <li>
+            <strong>Déploiement :</strong> Solution interne (serveur local,
+            Docker).
+          </li>
+          <li>
+            <strong>Sécurité :</strong> Gestion des credentials via `.env`,
+            prévention des injections SQL.
+          </li>
+          <li><strong>Performance :</strong> Optimisation des requêtes SQL.</li>
+        </ul>
+      </section>
+
+      <section id="livrables">
+        <h2>9. Livrables</h2>
+        <ul>
+          <li>Application Web fonctionnelle.</li>
+          <li>Code source complet et commenté.</li>
+          <li>
+            Documentation : Manuel Utilisateur, Documentation Technique, ce
+            Cahier des Charges finalisé.
+          </li>
+          <li>Template de configuration (`.env.example`).</li>
+        </ul>
+      </section>
+
+      <section id="planning">
+        <h2>10. Planning Prévisionnel (Estimatif)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Durée Estimée</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Analyse & Conception</td>
+              <td>1 semaine</td>
+            </tr>
+            <tr>
+              <td>Développement Backend</td>
+              <td>1 semaine</td>
+            </tr>
+            <tr>
+              <td>Développement Frontend</td>
+              <td>5 jours</td>
+            </tr>
+            <tr>
+              <td>Tests & Validations</td>
+              <td>4 jours</td>
+            </tr>
+            <tr>
+              <td>Déploiement & Documentation</td>
+              <td>5 jours</td>
+            </tr>
+            <tr>
+              <td><strong>Total Estimé</strong></td>
+              <td><strong>4 semaines</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="ressources">
+        <h2>11. Ressources Nécessaires</h2>
+        <p>
+          <strong>Humaines :</strong> Chef de Projet, Développeur
+          Python/Streamlit, implication des utilisateurs clés.
+        </p>
+        <p>
+          <strong>Matérielles & Logicielles :</strong> Accès BDD Excalibur,
+          environnement de développement, serveur de déploiement.
+        </p>
+      </section>
+
+      <section id="maintenance">
+        <h2>12. Maintenance et Évolution</h2>
+        <ul>
+          <li>
+            <strong>Maintenance Corrective :</strong> Correction des anomalies
+            post-déploiement.
+          </li>
+          <li>
+            <strong>Maintenance Évolutive :</strong> Prise en compte de
+            nouvelles demandes, adaptation aux évolutions ERP.
+          </li>
+          <li><strong>Support :</strong> À définir.</li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+      <p>© 2025 EmkaMed - Tous droits réservés.</p>
+    </footer>
+  </body>
+</html>

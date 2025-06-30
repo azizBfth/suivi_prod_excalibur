@@ -1,0 +1,38 @@
+# FastAPI and web framework dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+jinja2>=3.1.0
+python-multipart>=0.0.6
+
+# Data processing dependencies
+pandas>=2.0.0
+numpy>=1.24.0
+plotly>=5.15.0
+pyodbc>=4.0.0
+python-dotenv>=1.0.0
+
+# Optional: Keep for potential data visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# API documentation and validation
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Production monitoring and logging
+structlog>=23.1.0
+prometheus-client>=0.17.0
+psutil>=5.9.0
+
+# Email notifications
+aiosmtplib>=2.0.0
+
+# Security and production
+gunicorn>=21.2.0
+
+# Authentication and security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Database connectivity
+sqlalchemy>=2.0.0

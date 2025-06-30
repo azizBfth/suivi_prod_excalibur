@@ -1,0 +1,38 @@
+{
+  "users": {
+    "admin": {
+      "username": "admin",
+      "full_name": "Aziz Boufath",
+      "email": "admin@company.com",
+      "hashed_password": "$2b$12$wybryr2T18eRKoC5Flo11uVPK0EMrobnPA3zy9B8uSOzjgRJUU.a6",
+      "is_active": true,
+      "role": "admin",
+      "created_at": "2024-01-01T00:00:00Z",
+      "last_login": null
+    },
+    "user": {
+      "username": "user",
+      "full_name": "Regular User",
+      "email": "user@company.com",
+      "hashed_password": "$2b$12$yJ63G3zI43jR686rfL37qeFvZLywAyh23jwRlSOihdPl3fzgDhkLC",
+      "is_active": true,
+      "role": "user",
+      "created_at": "2024-01-01T00:00:00Z",
+      "last_login": null
+    },
+    "chef": {
+      "username": "chef",
+      "full_name": "Chef de Production",
+      "email": "chef@company.com",
+      "hashed_password": "$2b$12$ViHgR5t821JGvtyDujGzsuW201K6MNFlp31VvwgIjHB9Ibt7H1z5G",
+      "is_active": true,
+      "role": "chef",
+      "created_at": "2025-06-27T11:19:51.112297",
+      "last_login": null
+    }
+  },
+  "metadata": {
+    "version": "2.0",
+    "last_updated": "2025-06-27T11:19:51.112360"
+  }
+}

@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tableau de Bord de Production Unifié - Excalibur ERP</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Chart.js for better charts - Using UMD build to avoid module issues -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Chart.js plugins - Using working CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <!-- Plotly.js (keeping for compatibility) -->
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-bg: #f8f9fa;
+        --border-color: #dee2e6;
+      }
+
+      body {
+        background-color: var(--light-bg);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .navbar {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand {
+        color: white !important;
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        height: fit-content;
+        position: sticky;
+        top: 1rem;
+      }
+
+      .sidebar-section {
+        margin-bottom: 2rem;
+      }
+
+      .sidebar-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .sidebar-title {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--border-color);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .main-content {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .nav-link {
+        color: var(--primary-color);
+        border-radius: 6px;
+        margin-bottom: 0.25rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .form-control,
+      .form-select {
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        transition: border-color 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+      }
+
+      .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+      }
+
+      .card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+      }
+
+      .card-header {
+        background-color: var(--light-bg);
+        border-bottom: 1px solid var(--border-color);
+        border-radius: 8px 8px 0 0 !important;
+        font-weight: 600;
+      }
+
+      .kpi-card {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 8px;
+        color: white;
+        margin-bottom: 1rem;
+      }
+
+      .kpi-card.primary {
+        background: linear-gradient(135deg, var(--primary-color), #34495e);
+      }
+
+      .kpi-card.success {
+        background: linear-gradient(135deg, var(--success-color), #2ecc71);
+      }
+
+      .kpi-card.info {
+        background: linear-gradient(135deg, var(--success-color),rgb(89, 255, 158));
+      }
+
+      .kpi-card.warning {
+        background: linear-gradient(135deg, var(--warning-color), #e67e22);
+      }
+
+      .kpi-card.danger {
+        background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      }
+
+      .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .kpi-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .table-container {
+        max-height: 600px;
+        overflow-y: auto;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+      }
+
+      .table th {
+        background-color: var(--light-bg);
+        border-bottom: 2px solid var(--border-color);
+        font-weight: 600;
+        color: var(--primary-color);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: var(--secondary-color);
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .status-connected {
+        background-color: rgb(209 231 221 / 75%);
+        color: var(--success-color);
+      }
+
+      .status-error {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--danger-color);
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: -100%;
+          width: 280px;
+          height: 100vh;
+          z-index: 1050;
+          transition: left 0.3s ease;
+          overflow-y: auto;
+        }
+
+        .sidebar.show {
+          left: 0;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .navbar-toggler {
+          border: none;
+          color: white;
+        }
+      }
+
+      /* Quick action buttons styling */
+      .quick-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+
+      .quick-actions .btn {
+        flex: 1;
+        min-width: 120px;
+        font-size: 0.85rem;
+      }
+
+      /* View mode toggle styling */
+      .view-mode-toggle {
+        display: flex;
+        background-color: var(--light-bg);
+        border-radius: 6px;
+        padding: 0.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .view-mode-toggle .btn {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--primary-color);
+        font-size: 0.85rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+      }
+
+      .view-mode-toggle .btn.active {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      /* Main tabs styling */
+      .main-tabs {
+        border-bottom: 2px solid var(--border-color);
+        margin-bottom: 2rem;
+      }
+
+      .main-tabs .nav-link {
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--primary-color);
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        margin-bottom: -2px;
+        transition: all 0.3s ease;
+      }
+
+      .main-tabs .nav-link.active {
+        background: none;
+        border-bottom-color: var(--secondary-color);
+        color: var(--secondary-color);
+      }
+
+      .main-tabs .nav-link:hover {
+        color: var(--secondary-color);
+        border-bottom-color: rgba(52, 152, 219, 0.3);
+      }
+
+      /* Enhanced KPI Cards */
+      .kpi-card {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 12px;
+        color: white;
+        margin-bottom: 1rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        pointer-events: none;
+      }
+
+      .kpi-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+
+      .kpi-label {
+        font-size: 0.95rem;
+        opacity: 0.95;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .kpi-icon {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 2rem;
+        opacity: 0.3;
+      }
+
+      /* Chart containers */
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 1rem;
+      }
+
+      .chart-container canvas {
+        max-height: 300px !important;
+      }
+
+      /* Enhanced progress bars */
+      .progress {
+        height: 24px;
+        border-radius: 12px;
+        background-color: rgba(0,0,0,0.1);
+        overflow: hidden;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+      }
+
+      .progress-bar {
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 24px;
+        transition: width 0.6s ease;
+        position: relative;
+      }
+
+      .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+      }
+
+      /* Enhanced badges */
+      .badge {
+        padding: 0.5em 0.8em;
+        font-size: 0.8em;
+        font-weight: 600;
+        border-radius: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Priority badges */
+      .priority-urgent {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        animation: pulse 2s infinite;
+      }
+
+      .priority-high {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+      }
+
+      .priority-normal {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+      }
+
+      @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+      }
+
+      /* Enhanced table styling */
+      .table-enhanced {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-enhanced th {
+        background: linear-gradient(135deg, var(--primary-color), #34495e);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+        padding: 1rem 0.75rem;
+        border: none;
+      }
+
+      .table-enhanced td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
+
+      .table-enhanced tbody tr:hover {
+        background-color: rgba(52, 152, 219, 0.05);
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+      }
+
+      /* Action buttons */
+      .action-buttons {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .action-buttons .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/unified">
+          <i class="fas fa-industry me-2"></i>
+          Excalibur ERP - Tableau de Bord Unifié
+        </a>
+
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          onclick="toggleSidebar()"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="navbar-nav ms-auto">
+          <div class="nav-item">
+            <span
+              class="status-indicator status-connected"
+              id="connectionStatus"
+              style="display: none"
+            >
+              <i class="fas fa-circle"></i>
+              Connecté
+            </span>
+            <span
+              class="status-indicator status-error"
+              id="errorStatus"
+              style="display: none"
+            >
+              <i class="fas fa-circle"></i>
+              Erreur
+            </span>
+          </div>
+
+          <!-- User Info and Actions -->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user me-1"></i>
+              {% if user %}{{ user.username }}{% endif %}
+              <span class="badge bg-light text-dark ms-1">
+                {% if user_role %}{{ user_role }}{% endif %}
+              </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% if user_permissions and user_permissions.can_manage_users %}
+              <li><a class="dropdown-item" href="/admin/users"><i class="fas fa-users me-2"></i>Gestion Utilisateurs</a></li>
+              <li><hr class="dropdown-divider"></li>
+              {% endif %}
+              <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Streamlined Sidebar -->
+        <div class="col-lg-3 sidebar" id="sidebar">
+          <!-- Essential Filters -->
+          <div class="sidebar-section">
+            <div class="sidebar-title">Filtres</div>
+
+            <!-- Time Range Filter with Checkbox -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="enableDateRange" checked>
+                <label class="form-check-label" for="enableDateRange">
+                  <strong>Filtrer par période</strong>
+                </label>
+              </div>
+            </div>
+
+            <div id="dateRangeContainer">
+              <div class="mb-3">
+                <label for="dateDebut" class="form-label">Date de Début</label>
+                <input type="date" class="form-control" id="dateDebut" />
+              </div>
+              <div class="mb-3">
+                <label for="dateFin" class="form-label">Date de Fin</label>
+                <input type="date" class="form-control" id="dateFin" />
+              </div>
+
+              <!-- Quick Date Range Buttons -->
+              <div class="mb-3">
+                <label class="form-label">Périodes rapides</label>
+                <div class="d-grid gap-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickDateRange('today')">
+                    Aujourd'hui
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickDateRange('week')">
+                    Cette semaine
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickDateRange('month')">
+                    Ce mois
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setQuickDateRange('quarter')">
+                    Ce trimestre
+                  </button>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Quick Action Buttons -->
+            <div class="quick-actions">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                onclick="refreshAllData()"
+              >
+                <i class="fas fa-sync-alt me-1"></i>
+                Actualiser
+              </button>
+            </div>
+          </div>
+
+          <!-- View Options - Simplified to 3 modes -->
+          <div class="sidebar-section">
+            <div class="sidebar-title">Mode d'Affichage</div>
+            <div class="view-mode-toggle">
+              <button
+                class="btn active"
+                id="overviewMode"
+                onclick="setViewMode('overview')"
+              >
+                <i class="fas fa-th-large me-1"></i>
+                Aperçu
+              </button>
+              <button
+                class="btn"
+                id="detailedMode"
+                onclick="setViewMode('detailed')"
+              >
+                <i class="fas fa-list me-1"></i>
+                Détaillé
+              </button>
+              <button
+                class="btn"
+                id="chartsMode"
+                onclick="setViewMode('charts')"
+              >
+                <i class="fas fa-chart-bar me-1"></i>
+                Graphiques
+              </button>
+            </div>
+          </div>
+
+          <!-- Export Actions (Chef/Admin Only) -->
+          {% if user_permissions and user_permissions.can_export %}
+          <div class="sidebar-section">
+            <div class="sidebar-title">Exporter</div>
+            <div class="d-grid gap-2">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                onclick="ExportManager.exportComprehensiveCSV()"
+                title="Export CSV complet avec tous les onglets"
+              >
+                <i class="fas fa-download me-2"></i>CSV Complet
+              </button>
+              <button
+                class="btn btn-outline-success btn-sm"
+                onclick="ExportManager.exportComprehensiveTXT()"
+                title="Générer un rapport détaillé de la production"
+              >
+                <i class="fas fa-file-alt me-2"></i>Rapport Détaillé
+              </button>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 main-content">
+          <!-- Page Header -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h1 class="h3 mb-1">Tableau de Bord de Production Unifié</h1>
+              <p class="text-muted mb-0">
+                Surveillance complète de la production et gestion des commandes
+              </p>
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-outline-primary"
+                onclick="refreshAllData()"
+              >
+                <i class="fas fa-sync-alt me-1"></i>
+                Actualiser
+              </button>
+              {% if user_permissions and user_permissions.can_export %}
+              <div class="dropdown">
+                <button
+                  class="btn btn-outline-secondary dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  <i class="fas fa-download me-1"></i>
+                  Exporter
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onclick="ExportManager.exportComprehensiveCSV()"
+                      ><i class="fas fa-file-csv me-2"></i>CSV Complet (Tous les onglets)</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onclick="ExportManager.exportComprehensiveTXT()"
+                      ><i class="fas fa-file-alt me-2"></i>Rapport Détaillé TXT</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onclick="ExportManager.exportTabData('all', 'excel')"
+                      ><i class="fas fa-file-excel me-2"></i>Excel (Vue combinée)</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Loading indicator -->
+          <div class="loading" id="loadingIndicator">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3 text-muted">Chargement des données...</p>
+          </div>
+
+          <!-- Alerts -->
+          <div
+            class="alert alert-success"
+            id="connectionAlert"
+            style="display: none"
+          >
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="connectionMessage">Connecté à Excalibur ERP</span>
+            <span id="lastUpdateTime" class="float-end"></span>
+          </div>
+
+          <div class="alert alert-danger" id="errorAlert" style="display: none">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="errorMessage"></span>
+          </div>
+
+          <div class="alert alert-info" id="infoAlert" style="display: none">
+            <i class="fas fa-info-circle me-2"></i>
+            <span id="infoMessage"></span>
+          </div>
+
+          <!-- Main Production Tracking Tabs -->
+          <ul class="nav nav-tabs main-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="of-en-cours-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#of-en-cours-content"
+                type="button"
+                role="tab"
+                onclick="TabManager.switchMainTab('of-en-cours')"
+              >
+                <i class="fas fa-play me-2"></i>
+                OF En Cours (OF_DA)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="of-historique-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#of-historique-content"
+                type="button"
+                role="tab"
+                onclick="TabManager.switchMainTab('of-historique')"
+              >
+                <i class="fas fa-history me-2"></i>
+                OF Terminés (HISTO_OF_DA)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="of-combined-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#of-combined-content"
+                type="button"
+                role="tab"
+                onclick="TabManager.switchMainTab('of-combined')"
+              >
+                <i class="fas fa-list me-2"></i>
+                Vue Combinée (Tous les OF)
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content" id="mainTabContent">
+            <!-- OF En Cours Tab (OF_DA Table) -->
+            <div
+              class="tab-pane fade show active"
+              id="of-en-cours-content"
+              role="tabpanel"
+            >
+              <!-- KPI Cards for En Cours -->
+              <div class="row g-3 mb-4" id="enCoursKpiCards">
+                <!-- KPI cards will be populated by JavaScript -->
+              </div>
+
+              <!-- Charts Row -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Répartition par Statut
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="enCoursStatusChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Avancement des OF
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="enCoursProgressChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Priority Distribution Chart -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Répartition par Priorité
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="enCoursPriorityChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Timeline des Lancements
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="enCoursTimelineChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OF En Cours Data Table -->
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">
+                    <i class="fas fa-play me-2"></i>
+                    Ordres de Fabrication En Cours
+                  </h5>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshData('of-en-cours')">
+                      <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                    {% if user_permissions and user_permissions.can_export %}
+                    <button class="btn btn-sm btn-outline-success" onclick="ExportManager.exportTabData('en_cours', 'csv')">
+                      <i class="fas fa-download"></i> CSV
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" onclick="ExportManager.exportTabData('en_cours', 'excel')">
+                      <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-enhanced mb-0" id="enCoursTable">
+                      <thead id="enCoursHeader">
+                        <!-- Header will be populated by JavaScript -->
+                      </thead>
+                      <tbody id="enCoursBody">
+                        <tr>
+                          <td colspan="10" class="text-center text-muted">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Chargement des données...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OF Historique Tab (HISTO_OF_DA Table) -->
+            <div
+              class="tab-pane fade"
+              id="of-historique-content"
+              role="tabpanel"
+            >
+              <!-- KPI Cards for Historique -->
+              <div class="row g-3 mb-4" id="historiqueKpiCards">
+                <!-- KPI cards will be populated by JavaScript -->
+              </div>
+
+              <!-- Charts Row -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Tendance d'Efficacité
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="historiqueEfficiencyChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Taux de Complétion
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="historiqueCompletionChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Performance Analysis Charts -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Durée vs Prévue
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="historiqueDurationChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-area me-2"></i>
+                        Volume par Mois
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="historiqueVolumeChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OF Historique Data Table -->
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Ordres de Fabrication Terminés (Historique)
+                  </h5>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshData('of-historique')">
+                      <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                    {% if user_permissions and user_permissions.can_export %}
+                    <button class="btn btn-sm btn-outline-success" onclick="ExportManager.exportTabData('histo', 'csv')">
+                      <i class="fas fa-download"></i> CSV
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" onclick="ExportManager.exportTabData('histo', 'excel')">
+                      <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-enhanced mb-0" id="historiqueTable">
+                      <thead id="historiqueHeader">
+                        <!-- Header will be populated by JavaScript -->
+                      </thead>
+                      <tbody id="historiqueBody">
+                        <tr>
+                          <td colspan="10" class="text-center text-muted">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Chargement des données...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OF Combined Tab (Both Tables Combined) -->
+            <div
+              class="tab-pane fade"
+              id="of-combined-content"
+              role="tabpanel"
+            >
+              <!-- KPI Cards for Combined -->
+              <div class="row g-3 mb-4" id="combinedKpiCards">
+                <!-- KPI cards will be populated by JavaScript -->
+              </div>
+
+              <!-- Charts Row -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Répartition par Source
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="combinedSourceChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Timeline Distribution
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="combinedTimelineChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Performance Overview Charts -->
+              <div class="row mb-4">
+                <div class="col-md-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-doughnut me-2"></i>
+                        Statut Global
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="combinedStatusChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Répartition Clients
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="combinedClientChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Familles Techniques
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container">
+                        <canvas id="combinedFamilyChart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Combined Data Table -->
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Vue Combinée - Tous les Ordres de Fabrication
+                  </h5>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshData('of-combined')">
+                      <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                    {% if user_permissions and user_permissions.can_export %}
+                    <button class="btn btn-sm btn-outline-success" onclick="ExportManager.exportTabData('all', 'csv')">
+                      <i class="fas fa-download"></i> CSV
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" onclick="ExportManager.exportTabData('all', 'excel')">
+                      <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="ExportManager.exportComprehensiveTXT()">
+                      <i class="fas fa-file-alt"></i> Rapport Détaillé
+                    </button>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-enhanced mb-0" id="combinedTable">
+                      <thead id="combinedHeader">
+                        <!-- Header will be populated by JavaScript -->
+                      </thead>
+                      <tbody id="combinedBody">
+                        <tr>
+                          <td colspan="11" class="text-center text-muted">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Chargement des données...
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts Section (Global) -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Alertes Système
+                  </h5>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshAlerts()">
+                      <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="checkAlerts()">
+                      <i class="fas fa-search"></i> Vérifier
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="sendTestAlert()">
+                      <i class="fas fa-vial"></i> Test
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div id="alertsContainer">
+                    <div class="text-center text-muted">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Chargement des alertes...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          </div>
+
+          <!-- Data Summary -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row text-center">
+                    <div class="col-md-3">
+                      <div class="text-muted small">Total des Enregistrements</div>
+                      <div class="h5 mb-0" id="dataCount">-</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-muted small">Dernière Mise à Jour</div>
+                      <div class="h6 mb-0" id="lastRefresh">-</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-muted small">Statut</div>
+                      <div class="h6 mb-0" id="systemStatus">-</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-muted small">Temps de Réponse</div>
+                      <div class="h6 mb-0" id="responseTime">-</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      // Mobile sidebar toggle
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("show");
+      }
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener("click", function (event) {
+        const sidebar = document.getElementById("sidebar");
+        const toggleButton = document.querySelector(".navbar-toggler");
+
+        if (
+          window.innerWidth <= 768 &&
+          !sidebar.contains(event.target) &&
+          !toggleButton.contains(event.target) &&
+          sidebar.classList.contains("show")
+        ) {
+          sidebar.classList.remove("show");
+        }
+      });
+
+      // Quick date range functions
+      function setQuickDateRange(period) {
+        const today = new Date();
+        const dateDebut = document.getElementById("dateDebut");
+        const dateFin = document.getElementById("dateFin");
+
+        let startDate = new Date();
+
+        switch(period) {
+          case 'today':
+            startDate = new Date(today);
+            break;
+          case 'week':
+            startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+          case 'month':
+            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            break;
+          case 'quarter':
+            const quarter = Math.floor(today.getMonth() / 3);
+            startDate = new Date(today.getFullYear(), quarter * 3, 1);
+            break;
+        }
+
+        if (dateDebut) dateDebut.value = startDate.toISOString().split('T')[0];
+        if (dateFin) dateFin.value = today.toISOString().split('T')[0];
+
+        // Trigger filter change
+        if (typeof FilterManager !== 'undefined') {
+          FilterManager.onFilterChange();
+        }
+      }
+
+      // View mode functions
+      function setViewMode(mode) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.view-mode-toggle .btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+
+        // Add active class to selected button
+        document.getElementById(mode + 'Mode').classList.add('active');
+
+        // Update app state
+        if (typeof AppState !== 'undefined') {
+          AppState.currentViewMode = mode;
+        }
+
+        // Apply view mode changes
+        applyViewMode(mode);
+      }
+
+      function applyViewMode(mode) {
+        const tables = document.querySelectorAll('.table-responsive');
+        const charts = document.querySelectorAll('.chart-container');
+
+        switch(mode) {
+          case 'overview':
+            // Show both tables and charts
+            tables.forEach(table => table.style.display = 'block');
+            charts.forEach(chart => chart.parentElement.parentElement.style.display = 'block');
+            break;
+          case 'detailed':
+            // Show only tables
+            tables.forEach(table => table.style.display = 'block');
+            charts.forEach(chart => chart.parentElement.parentElement.style.display = 'none');
+            break;
+          case 'charts':
+            // Show only charts
+            tables.forEach(table => table.style.display = 'none');
+            charts.forEach(chart => chart.parentElement.parentElement.style.display = 'block');
+            break;
+        }
+      }
+
+      // Enhanced filter functions
+      function toggleAlertsOnly() {
+        const btn = document.getElementById('alertsOnlyBtn');
+        const isActive = btn.classList.contains('active');
+
+        if (isActive) {
+          btn.classList.remove('active', 'btn-warning');
+          btn.classList.add('btn-outline-warning');
+        } else {
+          btn.classList.remove('btn-outline-warning');
+          btn.classList.add('active', 'btn-warning');
+        }
+
+        if (typeof AppState !== 'undefined') {
+          AppState.filters.alertsOnly = !isActive;
+        }
+
+        if (typeof DataManager !== 'undefined') {
+          DataManager.refreshCurrentView();
+        }
+      }
+
+      function showInProgressOnly() {
+        const statutFilter = document.getElementById('statutFilter');
+        if (statutFilter) {
+          statutFilter.value = 'C'; // En cours
+          if (typeof FilterManager !== 'undefined') {
+            FilterManager.onFilterChange();
+          }
+        }
+      }
+
+      // Export functions
+      function exportData(format, type = 'all') {
+        if (typeof ExportManager !== 'undefined') {
+          switch(format) {
+            case 'csv':
+              ExportManager.exportCSV();
+              break;
+            case 'excel':
+              ExportManager.exportExcel();
+              break;
+            case 'txt':
+              ExportManager.exportTXT();
+              break;
+          }
+        }
+      }
+
+      // Refresh functions
+      function refreshAllData() {
+        if (typeof DataManager !== 'undefined') {
+          DataManager.loadInitialData();
+        }
+      }
+
+      function refreshData(type) {
+        if (typeof DataManager !== 'undefined') {
+          DataManager.refreshCurrentView();
+        }
+      }
+    </script>
+    <script src="/static/dashboard.js"></script>
+  </body>
+</html>
+  </body>
+</html>
