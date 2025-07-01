@@ -613,7 +613,7 @@ pip install -r requirements.txt
 python run_fastapi.py
 
 # Méthode 2 : Uvicorn direct
-uvicorn main:app --host localhost --port 80 --reload
+uvicorn main:app --host 0.0.0.0 --port 80 --reload
 
 # Méthode 3 : Python direct
 python main.py
@@ -621,9 +621,9 @@ python main.py
 
 ### 11.4 Accès à l'application
 
-- **Interface web** : http://localhost:80
-- **Documentation API** : http://localhost:80/docs
-- **API alternative** : http://localhost:80/redoc
+- **Interface web** : http://0.0.0.0:80
+- **Documentation API** : http://0.0.0.0:80/docs
+- **API alternative** : http://0.0.0.0:80/redoc
 
 ## 12. Maintenance Future
 

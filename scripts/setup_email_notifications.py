@@ -266,9 +266,9 @@ def main():
             print("\nPour démarrer l'application:")
             print("  python main.py")
             print("\nPour accéder au dashboard:")
-            print("  http://localhost:80")
+            print("  http://0.0.0.0:80")
             print("\nPour tester les notifications:")
-            print("  http://localhost:80/docs (API Swagger)")
+            print("  http://0.0.0.0:80/docs (API Swagger)")
         else:
             print("\n⚠️  Configuration sauvegardée mais le test d'email a échoué.")
             print("Vérifiez les logs de l'application pour plus de détails.")

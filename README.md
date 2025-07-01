@@ -78,7 +78,7 @@ pip install -r requirements.txt
 # Lancer l'application FastAPI
 python main.py
 # ou
-uvicorn main:app --host localhost --port 80 --reload
+uvicorn main:app --host 0.0.0.0 --port 80 --reload
 ```
 
 ### Méthode 3 : Utilisation directe d'uvicorn
@@ -95,9 +95,9 @@ uvicorn main:app --reload
 
 Une fois lancée, l'application est accessible via :
 
-- **Dashboard Principal** : http://localhost:80
-- **Documentation API (Swagger)** : http://localhost:80/docs
-- **Documentation Alternative (ReDoc)** : http://localhost:80/redoc
+- **Dashboard Principal** : http://0.0.0.0:80
+- **Documentation API (Swagger)** : http://0.0.0.0:80/docs
+- **Documentation Alternative (ReDoc)** : http://0.0.0.0:80/redoc
 
 ## 🛠️ Utilitaires de Maintenance
 
@@ -134,7 +134,7 @@ python backup_config.py --cleanup 3
 
 Consultez le fichier `DEPLOYMENT_CHECKLIST.md` pour une liste complète des étapes de déploiement et de configuration en production.
 
-- **Health Check** : http://localhost:80/api/health
+- **Health Check** : http://0.0.0.0:80/api/health
 
 ## Configuration
 

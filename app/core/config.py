@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     db_database_name: Optional[str] = None
     
     # Server settings
-    host: str = "localhost"
+    host: str = "0.0.0.0"
     port: int = 80
     reload: bool = True
 

@@ -159,7 +159,7 @@ async def swagger_ui_html():
 if __name__ == "__main__":
     import uvicorn
     print("🚀 Starting FastAPI Production Tracking Application with Authentication")
-    print("📍 Server will be available at: http://localhost:80")
+    print("📍 Server will be available at: http://0.0.0.0:80")
     print("🔑 Login credentials: abo/HbB6yq+R+U or abo/abomk")
     print("-" * 60)
     # Disable reload when running from within another application context
