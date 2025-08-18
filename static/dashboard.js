@@ -566,7 +566,6 @@ const DataManager = {
     let completedOrders = 0;
     let avgProgress = 0;
     let alertsCount = 0;
-    let urgentOrders = 0;
     let avgEfficiency = 0;
 
     if (Array.isArray(data) && data.length > 0) {
@@ -581,7 +580,6 @@ const DataManager = {
         activeOrders = data.filter((item) => item.STATUT === "C").length;
         completedOrders = data.filter((item) => item.STATUT === "T").length;
         alertsCount = data.filter((item) => item.Alerte_temps).length;
-        urgentOrders = data.filter((item) => item.PRIORITE === "URGENT").length;
       }
 
       avgProgress =
@@ -598,38 +596,32 @@ const DataManager = {
     let kpiHtml = "";
 
     if (type === "enCours") {
-      kpiHtml = `
-        <div class="col-md-3">
-          <div class="kpi-card primary">
-            <i class="fas fa-clipboard-list kpi-icon"></i>
-            <div class="kpi-value">${Utils.formatNumber(totalOrders)}</div>
-            <div class="kpi-label">Total OF En Cours</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="kpi-card warning">
-            <i class="fas fa-play kpi-icon"></i>
-            <div class="kpi-value">${Utils.formatNumber(activeOrders)}</div>
-            <div class="kpi-label">Actifs</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="kpi-card info">
-            <i class="fas fa-chart-line kpi-icon"></i>
-            <div class="kpi-value">${Utils.formatPercentage(
-              avgProgress * 100
-            )}</div>
-            <div class="kpi-label">Avancement Moyen</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="kpi-card ${urgentOrders > 0 ? "danger" : "success"}">
-            <i class="fas fa-exclamation-triangle kpi-icon"></i>
-            <div class="kpi-value">${Utils.formatNumber(urgentOrders)}</div>
-            <div class="kpi-label">Priorité Urgente</div>
-          </div>
-        </div>
-      `;
+ kpiHtml = `
+  <div class="row">
+    <div class="col-md-4">
+      <div class="kpi-card primary">
+        <i class="fas fa-clipboard-list kpi-icon"></i>
+        <div class="kpi-value">${Utils.formatNumber(totalOrders)}</div>
+        <div class="kpi-label">Total OF En Cours</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card warning">
+        <i class="fas fa-play kpi-icon"></i>
+        <div class="kpi-value">${Utils.formatNumber(activeOrders)}</div>
+        <div class="kpi-label">Actifs</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card info">
+        <i class="fas fa-chart-line kpi-icon"></i>
+        <div class="kpi-value">${Utils.formatPercentage(avgProgress * 100)}</div>
+        <div class="kpi-label">Avancement Moyen</div>
+      </div>
+    </div>
+  </div>
+`;
+
     } else if (type === "historique") {
       kpiHtml = `
         <div class="col-md-3">
@@ -1390,12 +1382,14 @@ const DataManager = {
       { key: "PRODUIT", label: "Produit" },
       { key: "DESIGNATION", label: "Désignation" },
       { key: "STATUT", label: "Statut" },
-      { key: "CLIENT", label: "Client" },
-      { key: "FAMILLE_TECHNIQUE", label: "Famille" },
       { key: "LANCEMENT_AU_PLUS_TARD", label: "Lancement" },
+      { key: "DUREE_PREVUE", label: "DUREE PREVUE" },
+      { key: "CUMUL_TEMPS_PASSES", label: "C.TEMPS.PASSES" },
       { key: "QUANTITE_DEMANDEE", label: "Qté Demandée" },
       { key: "CUMUL_ENTREES", label: "Qté Produite" },
-      { key: "Avancement_PROD", label: "Avancement" },
+      { key: "Avancement_PROD", label: "Avancement Prod" },
+      { key: "Avancement_temps", label: "Avancement Temp" },
+
     ];
 
     // Add source column for combined view
@@ -1430,7 +1424,9 @@ const DataManager = {
         const progressPercentage = Math.round(
           (parseFloat(row.Avancement_PROD) || 0) * 100
         );
-
+ const progressTempPercentage = Math.round(
+          (parseFloat(row.Avancement_temps) || 0) * 100
+        );
         return `
         <tr>
           ${columns
@@ -1447,6 +1443,19 @@ const DataManager = {
                        aria-valuemin="0"
                        aria-valuemax="100">
                     ${progressPercentage}%
+                  </div>
+                </div>
+              `;
+              }else if (col.key === "Avancement_temps") {
+                value = `
+                <div class="progress" style="height: 20px;">
+                  <div class="progress-bar bg-${statusClass}"
+                       role="progressbar"
+                       style="width: ${progressTempPercentage}%"
+                       aria-valuenow="${progressTempPercentage}"
+                       aria-valuemin="0"
+                       aria-valuemax="100">
+                    ${progressTempPercentage}%
                   </div>
                 </div>
               `;
@@ -1660,9 +1669,9 @@ const TabManager = {
         { field: "NUMERO_OFDA", label: "N° OF" },
         { field: "PRODUIT", label: "Produit" },
         { field: "DESIGNATION", label: "Désignation" },
-        { field: "CLIENT", label: "Client" },
-        { field: "FAMILLE_TECHNIQUE", label: "Famille" },
         { field: "STATUT", label: "Statut" },
+        { key: "DUREE_PREVUE", label: "DUREE PREVUE" },
+        { key: "CUMUL_TEMPS_PASSES", label: "C.TEMPS.PASSES" },
         { field: "Avancement_PROD", label: "Avanc. Prod" },
         { field: "Avancement_temps", label: "Avanc. Temps" },
         { field: "EFFICACITE", label: "Efficacité" },
@@ -1677,8 +1686,8 @@ const TabManager = {
       columns: [
         { field: "NUMERO_OFDA", label: "N° OF" },
         { field: "PRODUIT", label: "Produit" },
-        { field: "CLIENT", label: "Client" },
-        { field: "DATE_FIN", label: "Date Fin" },
+        { key: "DUREE_PREVUE", label: "DUREE PREVUE" },
+        { key: "CUMUL_TEMPS_PASSES", label: "C.TEMPS.PASSES" },
         { field: "DUREE_TOTALE", label: "Durée" },
         { field: "EFFICACITE", label: "Efficacité" },
       ],
@@ -1692,8 +1701,9 @@ const TabManager = {
       columns: [
         { field: "NUMERO_OFDA", label: "N° OF" },
         { field: "PRODUIT", label: "Produit" },
-        { field: "CLIENT", label: "Client" },
         { field: "STATUT", label: "Statut" },
+        { key: "DUREE_PREVUE", label: "DUREE PREVUE" },
+        { key: "CUMUL_TEMPS_PASSES", label: "C.TEMPS.PASSES" },
         { field: "Avancement_PROD", label: "Avanc. Prod" },
         { field: "Avancement_temps", label: "Avanc. Temps" },
         { field: "EFFICACITE", label: "Efficacité" },
