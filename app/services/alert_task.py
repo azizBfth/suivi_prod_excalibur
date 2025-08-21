@@ -57,7 +57,7 @@ def check_alerts():
 login()
 
 # Schedule the task every day at 07:00
-schedule.every().day.at("15:46").do(check_alerts)
+schedule.every().day.at("08:24").do(check_alerts)
 
 print("Scheduler started. Waiting for 07:00...")
 

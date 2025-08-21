@@ -477,8 +477,8 @@ async def check_production_alerts(analyzer):
                 time_alerts = of_data[of_data['Alerte_temps'] == 1]
                 if not time_alerts.empty:
                     await create_system_alert(
-                        title="Time Overrun Alert",
-                        message=f"{len(time_alerts)} orders are exceeding planned time",
+                        title="Alerte de dépassement de temps",
+                        message=f"{len(time_alerts)} OFs dépassent le délai prévu",
                         severity="high",
                         category="production"
                     )
@@ -489,34 +489,15 @@ async def check_production_alerts(analyzer):
                 low_advancement = of_data[of_data['Avancement_PROD'] < 0.3]
                 if not low_advancement.empty:
                     await create_system_alert(
-                        title="Low Advancement Alert",
-                        message=f"{len(low_advancement)} orders have less than 30% advancement",
+                        title="Alerte de faible progressiont",
+                        message=f"{len(low_advancement)} OFs ont moins de 30 % d'avancement",
                         severity="medium",
                         category="production"
                     )
                     alerts_created += 1
 
-            # 3. Check for overdue orders (past LANCEMENT_AU_PLUS_TARD date)
-            if 'LANCEMENT_AU_PLUS_TARD' in of_data.columns:
-                try:
-                    of_data['LANCEMENT_AU_PLUS_TARD_DATE'] = pd.to_datetime(of_data['LANCEMENT_AU_PLUS_TARD'], errors='coerce')
-                    overdue_orders = of_data[
-                        (of_data['LANCEMENT_AU_PLUS_TARD_DATE'].notna()) &
-                        (of_data['LANCEMENT_AU_PLUS_TARD_DATE'] < current_time) &
-                        (of_data['STATUT'] != 'T')  # Not terminated
-                    ]
-                    if not overdue_orders.empty:
-                        await create_system_alert(
-                            title="Overdue Orders Alert",
-                            message=f"{len(overdue_orders)} orders are past their deadline",
-                            severity="critical",
-                            category="production"
-                        )
-                        alerts_created += 1
-                except Exception as e:
-                    app_logger.warning(f"Error checking overdue orders: {e}")
-
-            # 4. Check for efficiency issues (time advancement > production advancement)
+            
+            # 3. Check for efficiency issues (time advancement > production advancement)
             if 'Avancement_temps' in of_data.columns and 'Avancement_PROD' in of_data.columns:
                 efficiency_issues = of_data[
                     (of_data['Avancement_temps'] > of_data['Avancement_PROD']) &
@@ -524,8 +505,8 @@ async def check_production_alerts(analyzer):
                 ]
                 if not efficiency_issues.empty:
                     await create_system_alert(
-                        title="Efficiency Issues Alert",
-                        message=f"{len(efficiency_issues)} orders show efficiency concerns",
+                        title="Alerte sur les problèmes d'efficacité",
+                        message=f"{len(efficiency_issues)}  OFs montrent des problèmes d'efficacité",
                         severity="medium",
                         category="production"
                     )
